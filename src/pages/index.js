@@ -1,17 +1,16 @@
 //переменные и импорты
-import { Card } from "./Card.js";
-import { FormValidator } from "./FormValidator.js";
-import { Popup } from "./Popup.js";
-import { PopupImage } from "./PopupImage.js";
-import { PopupWithForm } from "./PopupWithForm.js";
-import { Section } from "./Section.js";
-import { UserInfo } from "./UserInfo.js";
+import './index.css'
+
+import { Card } from "../scripts/Card.js";
+import { FormValidator } from "../scripts/FormValidator.js";
+import { PopupImage } from "../scripts/PopupImage.js";
+import { PopupWithForm } from "../scripts/PopupWithForm.js";
+import { Section } from "../scripts/Section.js";
+import { UserInfo } from "../scripts/UserInfo.js";
 const popupProfile = document.querySelector(".popupProfile");
 const popupAdd = document.querySelector(".popupAdd");
 const profileEditButton = document.querySelector(".profile__edit-button");
 const cardAddButton = document.querySelector(".profile__add-button");
-const firstName = document.querySelector(".profile__name");
-const job = document.querySelector(".profile__job");
 const formElementProfile = document.forms['popupProfile'];
 const nameInput = document.querySelector('.popup__input_type_name');
 const jobInput = document.querySelector('.popup__input_type_job');
@@ -65,8 +64,6 @@ const cardSectionInstance = new Section({items: initialCards, renderer: ({name, 
   const cardElement = createCard({name,link})
   cardSectionInstance.addItem(cardElement);
 }}, ".element");
-
-const popupInstance = new Popup(".popup");
 
 const cardFormInstance = new PopupWithForm(".popupAdd",".popup__form_add", handleFormSubmitAdd);
 
@@ -164,4 +161,3 @@ formElementProfile.addEventListener('submit', handleFormSubmitProfile);
 
 cardSectionInstance.rendererItems(initialCards);
 cardFormInstance.setEventListener();
-cardImageInstance.open(); 
