@@ -37,7 +37,7 @@ export class FormValidator {
       };
   };
   //Приватный метод, отключающий кнопку 
-  #disableButton() {
+  disableButton() {
     this.activeButton.disabled = true;
     this.activeButton.classList.add(this.#inactiveButtonClass);
   };
@@ -49,7 +49,7 @@ export class FormValidator {
   //Приватный метод, меняющий состояние кнопки в зависимости валидна ли форма или нет
   #toggleButtonState(isFormActive) {
     if (!isFormActive) {
-      this.#disableButton();
+      this.disableButton();
     } else {
       this.#enableButton();
     }
@@ -68,7 +68,6 @@ export class FormValidator {
   };
   //Общий метод, который валидируют формы
   enableValidation() {
-    this.#disableButton();
     this.#setEventListeners();
   };
 }

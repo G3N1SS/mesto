@@ -1,65 +1,37 @@
 //переменные и импорты
 import './index.css'
 
-import { Card } from "../scripts/Card.js";
-import { FormValidator } from "../scripts/FormValidator.js";
-import { PopupImage } from "../scripts/PopupImage.js";
-import { PopupWithForm } from "../scripts/PopupWithForm.js";
-import { Section } from "../scripts/Section.js";
-import { UserInfo } from "../scripts/UserInfo.js";
-const popupProfile = document.querySelector(".popupProfile");
-const popupAdd = document.querySelector(".popupAdd");
-const profileEditButton = document.querySelector(".profile__edit-button");
-const cardAddButton = document.querySelector(".profile__add-button");
-const formElementProfile = document.forms['popupProfile'];
-const nameInput = document.querySelector('.popup__input_type_name');
-const jobInput = document.querySelector('.popup__input_type_job');
-const placeInput = document.querySelector('.popup__input_type_place');
-const imageInput = document.querySelector('.popup__input_type_image');
-const popupImages = document.querySelector(".popupImages");
-const popupImage = document.querySelector(".popup__image");
-const popupCaption = document.querySelector(".popup__caption");
-const popups = document.querySelectorAll('.popup');
-const cardForm = document.querySelector('.popup__form_add');
-const profileForm = document.querySelector('.popup__form_profile');
-export const config = {
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__save',
-  inactiveButtonClass: 'popup__save_invalid',
-  inputErrorClass: 'popup__input_state_invalid',
-  errorClass: '.error',
-}
+import {popupProfile} from "../scripts/utils/constants.js"
+import {popupAdd} from "../scripts/utils/constants.js"
+import {profileEditButton} from "../scripts/utils/constants.js"
+import {cardAddButton} from "../scripts/utils/constants.js"
+import {formElementProfile} from "../scripts/utils/constants.js"
+import {nameInput} from "../scripts/utils/constants.js"
+import {jobInput} from "../scripts/utils/constants.js"
+import {placeInput} from "../scripts/utils/constants.js"
+import {imageInput} from "../scripts/utils/constants.js"
+import {popupImages} from "../scripts/utils/constants.js"
+import {popupImage} from "../scripts/utils/constants.js"
+import {popupCaption} from "../scripts/utils/constants.js"
+import {popups} from "../scripts/utils/constants.js"
+import {cardForm} from "../scripts/utils/constants.js"
+import {profileForm} from "../scripts/utils/constants.js"
+import {config} from "../scripts/utils/constants.js"
+import {initialCards} from "../scripts/utils/constants.js"
+
+import { Card } from "../scripts/components/Card.js";
+import { FormValidator } from "../scripts/components/FormValidator.js";
+import { PopupImage } from "../scripts/components/PopupImage.js";
+import { PopupWithForm } from "../scripts/components/PopupWithForm.js";
+import { Section } from "../scripts/components/Section.js";
+import { UserInfo } from "../scripts/components/UserInfo.js";
+import { Popup } from '../scripts/components/Popup'
+
 const cardValidator = new FormValidator(cardForm, config);
 cardValidator.enableValidation();
 const profileValidator = new FormValidator(profileForm, config);
 profileValidator.enableValidation();
-const initialCards = [
-  {
-    name: 'Архыз',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg'
-  },
-  {
-    name: 'Челябинская область',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg'
-  },
-  {
-    name: 'Иваново',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg'
-  },
-  {
-    name: 'Камчатка',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg'
-  },
-  {
-    name: 'Холмогорский район',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg'
-  },
-  {
-    name: 'Байкал',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg'
-  }
-];
+
 const cardSectionInstance = new Section({items: initialCards, renderer: ({name, link}) => {
   const cardElement = createCard({name,link})
   cardSectionInstance.addItem(cardElement);
@@ -69,82 +41,57 @@ const cardFormInstance = new PopupWithForm(".popupAdd",".popup__form_add", handl
 
 const profileFormInstance = new PopupWithForm(".popupProfile", ".popup__form_profile", handleFormSubmitProfile);
 
-const cardImageInstance = new PopupImage(".popup__image");
+const cardImageInstance = new PopupImage(".popupImages", ".popup__image", ".popup__caption");
 
 const userInfo = new UserInfo(".profile__name", ".profile__job");
 //функции
 
 //Функция закрытия всех модальных окон при нажатии на оверлей(общая функция)
-popups.forEach((popup) => {
-  popup.addEventListener('mousedown', (evt) => {
-    if (evt.target.classList.contains('popup_opened')) {
-      closePopup(popup)
-    }
-    if (evt.target.classList.contains('popup__close')) {
-      closePopup(popup)
-    }
-  })
-})
+cardFormInstance.setEventListener();
+profileFormInstance.setEventListener();
 //Функция открытия модального окна с профилем
 function handleProfileEditButtonClick() {
-  userInfo.getUserInfo(nameInput,jobInput)
+  profileValidator.disableButton();
+  const userInformation = userInfo.getUserInfo(nameInput,jobInput);
+  nameInput.value = userInformation.userName;
+  jobInput.value = userInformation.userJob;
   profileFormInstance.open()
 };
 //Функция открытия модального окна с изображением
 function handleClickImage(name,link){
-  popupImage.src = link;
-  popupImage.alt = name;
-  popupCaption.textContent = name;
-  openPopup(popupImages);
+  cardImageInstance.open(name,link);
+  cardImageInstance.setEventListener();
 }
 //Функция открытия модального окна с добавлением новой карточки
 function handleCardAddButtonClick() {
+  cardValidator.disableButton();
   cardFormInstance.open();
 };
-//Функция открытия всех модальных окон(общая функция)
-function openPopup(popup) {
-  popup.classList.add('popup_opened');
-  document.addEventListener('keydown', closeByEscape)
-};
-//Функция закрытия всех модальных окон(общая функция)
-function closePopup(popup) {
-  popup.classList.remove('popup_opened');
-  document.removeEventListener('keydown', closeByEscape);
-};
+
 //Функция изменения данных профиля
-function handleFormSubmitProfile(evt) {
-  evt.preventDefault();
+function handleFormSubmitProfile() {
   userInfo.setUserInfo(nameInput, jobInput);
-  closePopup(popupProfile);
+  profileFormInstance.close();
 };
 //Функция добавления карточки на страницу
-function handleFormSubmitAdd(evt) {
+function handleFormSubmitAdd() {
   const dataCard = {
     name: placeInput.value,
     link: imageInput.value
-  };
+  }
   renderCard(dataCard);
-  closePopup(popupAdd);
-  evt.target.reset();
+  cardFormInstance.close();
 };
 //Функция создании карточки с помощью класса карты
 function createCard({name, link}) {
   const card = new Card({name, link, handleClickImage}, ".element-template").createCard()
   return card;
 }
-//Фунция вывода карточки на страницу
 
 //Функция добавления новой карточки на страницу
 function renderCard({name, link}) {
   cardSectionInstance.addItem(createCard({name, link}));
 };
-//Фунция закрытия модальных окон при нажатии на клавишу Escape(общая функция)
-function closeByEscape(evt) {
-  if (evt.key === 'Escape') {
-    const openedPopup = document.querySelector('.popup_opened');
-    closePopup(openedPopup);
-  }
-}
 
 //слушатели/обработчики
 
@@ -153,11 +100,10 @@ profileEditButton.addEventListener("click", handleProfileEditButtonClick);
 //Открытие модального окна с добавлением карточки
 cardAddButton.addEventListener("click", handleCardAddButtonClick);
 //Отправка формы при изменения профиля
-formElementProfile.addEventListener('submit', handleFormSubmitProfile);
+
 //Отправка формы при добавлении карточки
 
 
 //вызов функций
 
 cardSectionInstance.rendererItems(initialCards);
-cardFormInstance.setEventListener();

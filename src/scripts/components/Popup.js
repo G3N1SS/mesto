@@ -4,11 +4,21 @@ export class Popup {
     this.popup = document.querySelector(popupSelector);
   }
 
-  #handleEscUp(e) {
+  #handleEscUp = (e) => {
     if (e.key === "Escape") {
         this.close();
     }
   }
+
+  overlayClick = (evt) => {
+    if (
+      evt.target === evt.currentTarget ||
+      evt.target.classList.contains("popup__close")
+    ){
+      this.close();
+    }  
+  }
+
 
   open() {
     this.popup.classList.add("popup_opened");
@@ -20,13 +30,6 @@ export class Popup {
   }
 
 setEventListener() {
-  this.popup.addEventListener("mousedown", (evt) => {
-      if (
-        evt.target === evt.currentTarget ||
-        evt.target.classList.contains("popup__close")
-      ){
-        this.close();
-      }
-    });
+  this.popup.addEventListener("mousedown", this.overlayClick);
   }
 }
