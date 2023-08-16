@@ -57,12 +57,7 @@ function handleFormSubmitProfile() {
 };
 //Функция добавления карточки на страницу
 function handleFormSubmitAdd(inputValues) {
-  const dataCard = {
-    name: inputValues.inputPlace,
-    link: inputValues.inputImage
-  }
-  renderCard(dataCard);
-  console.log(inputValues);
+  renderCard({name: inputValues.inputPlace, link: inputValues.inputImage});
   cardFormInstance.close();
 };
 //Функция создании карточки с помощью класса карты
