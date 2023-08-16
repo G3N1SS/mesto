@@ -2,8 +2,8 @@
 import './index.css'
 import {profileEditButton} from "../scripts/utils/constants.js"
 import {cardAddButton} from "../scripts/utils/constants.js"
-import {nameInput} from "../scripts/utils/constants.js"
-import {jobInput} from "../scripts/utils/constants.js"
+// import {nameInput} from "../scripts/utils/constants.js"
+// import {jobInput} from "../scripts/utils/constants.js"
 import {cardForm} from "../scripts/utils/constants.js"
 import {profileForm} from "../scripts/utils/constants.js"
 import {config} from "../scripts/utils/constants.js"
@@ -51,8 +51,8 @@ function handleCardAddButtonClick() {
 };
 
 //Функция изменения данных профиля
-function handleFormSubmitProfile() {
-  userInfo.setUserInfo(nameInput, jobInput);
+function handleFormSubmitProfile({name, job}) {
+  userInfo.setUserInfo(name, job);
   profileFormInstance.close();
 };
 //Функция добавления карточки на страницу
