@@ -8,8 +8,8 @@ export class UserInfo {
   }
   getUserInfo() {
     this.#userData = {
-        userName: this.#name.textContent,
-        userJob: this.#about.textContent,
+        name: this.#name.textContent,
+        job: this.#about.textContent,
     }
     return this.#userData;
 }

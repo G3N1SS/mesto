@@ -12,8 +12,6 @@ export class PopupWithForm extends Popup {
       this.#formElement.querySelectorAll(".popup__input")
     )
   }
-
-
   
   #getInputValues() {
     const formValues = {};
@@ -21,6 +19,12 @@ export class PopupWithForm extends Popup {
         formValues[input.name] = input.value;
     });
     return formValues;
+  }
+
+  setInputsValue(element) {
+    this.#inputList.forEach(input => {
+      input.value = element[input.name];
+    })
   }
 
   setEventListener() {

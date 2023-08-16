@@ -22,7 +22,4 @@ export class PopupImage extends Popup {
     this.#popupCaption.textContent = "";
     super.close()
   }
-  setEventListener(){
-    super.setEventListener()
-  }
 }
