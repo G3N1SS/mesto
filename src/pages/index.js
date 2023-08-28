@@ -26,7 +26,7 @@ const profileValidator = new FormValidator(profileForm, config);
 profileValidator.enableValidation();
 
 const cardSectionInstance = new Section({renderer: (items) => {
-  createCard(items)
+  cardSectionInstance.addItemAppend(createCard(items))
 }}, ".element");
 
 const cardFormInstance = new PopupWithForm(".popup_type_opened-add",".popup__form_add", handleFormSubmitAdd);
@@ -104,7 +104,7 @@ function handleFormSubmitAdd(data) {
   api.addCard(data)
     .then((dataCard) => {
       dataCard.myId = userId;
-      renderCard(dataCard);
+      cardSectionInstance.addItemAppend(renderCard(dataCard));
       cardFormInstance.close();
     })
     .catch((err) => console.error(`Ошибка при создании карточки ${err}`))
@@ -144,12 +144,12 @@ function createCard(data) {
       .catch((err) => console.error(`Ошибка при снятии лайка ${err}`))
     }
   },".element-template")
-  cardSectionInstance.addItemPrepend(card.createCard())
+  return card.createCard()
 }
 
 //Функция добавления новой карточки на страницу
 function renderCard(data) {
-  createCard(data);
+  cardSectionInstance.addItemPrepend(createCard(data));
 };
 
 function handleClickDelete({card, cardId}) {
