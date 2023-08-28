@@ -49,7 +49,6 @@ const configApi = {
 
 const api = new Api(configApi);
 
-
 let userId = null;
 
 //функции
@@ -81,7 +80,10 @@ function handleFormSubmitAvatar(data) {
     userInfo.setUserInfo({avatar: res.avatar, about: res.about, username: res.name})
   })
   .catch((err => console.error(`Ошибка при редактировании профиля ${err}`)))
-  .finally()
+  .finally(() => {
+    avatarFormInstance.submitBtnTextChanger();
+  })
+  avatarFormInstance.close()
 }
 
 //Функция изменения данных профиля
@@ -91,43 +93,67 @@ function handleFormSubmitProfile(data) {
       userInfo.setUserInfo({avatar: res.avatar, about: res.about, username: res.name})
     })
     .catch((err => console.error(`Ошибка при редактировании профиля ${err}`)))
-    .finally()
+    .finally(() => {
+      profileFormInstance.submitBtnTextChanger()
+    })
   // userInfo.setUserInfo({name, job});
   profileFormInstance.close();
 };
 //Функция добавления карточки на страницу
 function handleFormSubmitAdd(data) {
-  debugger
-  renderCard({name: data.inputPlace, link: data.inputImage});
-  Promise.all([api.getInfo(), api.addCard(data)])
-    .then(([dataUser, dataCard]) => {
-      dataCard.myId = dataUser._id;
-      cardSectionInstance.addItem(createCard(dataCard))
+  api.addCard(data)
+    .then((dataCard) => {
+      dataCard.myId = userId;
+      renderCard(dataCard);
       cardFormInstance.close();
     })
+    .catch((err) => console.error(`Ошибка при создании карточки ${err}`))
+    .finally(() => {
+      cardFormInstance.submitBtnTextChanger()
+    })
+    cardFormInstance.close()
 };
 
-function handleFormSubmitDelete(element){
-  element.removeCard()
+function handleFormSubmitDelete({card, cardId}){
+  api.deleteCard(cardId)
+    .then(res => {
+      card.removeCard()
+      deleteFormInstance.close()
+    })
+    .catch((err) => console.error(`Ошибка при удалении карточки ${err}`))
+    .finally(() => {
+      deleteFormInstance.deleteBtnTextChanger()
+    })
   deleteFormInstance.close()
-}
+  } 
 
-function handleClickLike(cardLike){
-  cardLike.classList.toggle("elements__like-button_active")
-}
 //Функция создании карточки с помощью класса карты
 function createCard(data) {
-  const card = new Card({data, userId, handleClickImage, handleClickDelete, handleClickLike}, ".element-template").createCard()
-  cardSectionInstance.addItem(card)
+  const card = new Card({data, userId, handleClickImage, handleClickDelete},(likeElement, cardId) => {
+    if(likeElement.classList.contains("elements__like-button_active")){
+      api.removeLike(cardId)
+      .then(res => {
+        card.toggleLike(res.likes)
+      })
+      .catch((err) => console.error(`Ошибка при снятии лайка ${err}`))
+    } else {
+      api.putLike(cardId)
+      .then(res => {
+        card.toggleLike(res.likes)
+      })
+      .catch((err) => console.error(`Ошибка при снятии лайка ${err}`))
+    }
+  },".element-template")
+  cardSectionInstance.addItemPrepend(card.createCard())
 }
 
 //Функция добавления новой карточки на страницу
-function renderCard({name, link}) {
-  cardSectionInstance.addItem(createCard({name, link}));
+function renderCard(data) {
+  createCard(data);
 };
 
-function handleClickDelete() {
-  deleteFormInstance.open()
+function handleClickDelete({card, cardId}) {
+  deleteFormInstance.open({card, cardId})
 }
 
 //слушатели/обработчики
@@ -146,7 +172,8 @@ deleteFormInstance.setEventListener()
 
 Promise.all([api.getInfo(), api.getCards()])
   .then(([dataUser, dataCard]) => {
-    dataCard.forEach(element => element.myId = dataUser._id)
+    userId = dataUser._id
+    dataCard.forEach(element => element.myId = userId)
     userInfo.setUserInfo({avatar: dataUser.avatar,username: dataUser.name, about: dataUser.about})
     cardSectionInstance.rendererItems(dataCard)
   })

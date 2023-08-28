@@ -3,7 +3,6 @@ export class Api {
         this._url = config.url;
         this._headers = config.headers;
         this._authorization = config.headers.authorization;
-        console.log(this.setNewAvatar)
     }
 
     _checkResponce(res) {return res.ok ? res.json() : Promise.reject}
@@ -57,6 +56,36 @@ export class Api {
                 name: data.inputPlace,
                 link: data.inputImage
             })
+        })
+        .then(this._checkResponce)
+    }
+
+    putLike(cardId){
+        return fetch(`${this._url}/cards/${cardId}/likes`,{
+            method: 'PUT',
+            headers: {
+                authorization: this._authorization
+            }
+        })
+        .then(this._checkResponce)
+    }
+
+    removeLike(cardId){
+        return fetch(`${this._url}/cards/${cardId}/likes`,{
+            method: 'DELETE',
+            headers: {
+                authorization: this._authorization
+            }
+        })
+        .then(this._checkResponce)
+    }
+
+    deleteCard(cardId){
+        return fetch(`${this._url}/cards/${cardId}`, {
+            method: 'DELETE',
+            headers: {
+                authorization:this._authorization
+            }
         })
         .then(this._checkResponce)
     }

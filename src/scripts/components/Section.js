@@ -7,8 +7,12 @@ export class Section {
     this.#containerParentElement = document.querySelector(containerSelector);
   }
 
-  addItem(elementNode) {
+  addItemPrepend(elementNode) {
     this.#containerParentElement.prepend(elementNode);
+  }
+
+  addItemAppend(elementNode) {
+    this.#containerParentElement.append(elementNode);
   }
   rendererItems(items) {
     items.forEach((item) => {
