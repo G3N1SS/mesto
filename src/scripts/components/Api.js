@@ -1,0 +1,63 @@
+export class Api {
+    constructor(config){
+        this._url = config.url;
+        this._headers = config.headers;
+        this._authorization = config.headers.authorization;
+        console.log(this.setNewAvatar)
+    }
+
+    _checkResponce(res) {return res.ok ? res.json() : Promise.reject}
+
+    getInfo() {
+        return fetch(`${this._url}/users/me`, {
+            headers: {
+                authorization: this._authorization
+            }
+        })
+        .then(this._checkResponce)
+    }
+
+    getCards() {
+        return fetch(`${this._url}/cards`, {
+            headers: {
+                authorization: this._authorization
+            }
+        })
+        .then(this._checkResponce)
+    }
+
+    setUserInfo(data) {
+        return fetch(`${this._url}/users/me`, {
+            method: 'PATCH',
+            headers: this._headers,
+            body: JSON.stringify({
+                name: data.name,
+                about: data.job
+            })
+        })
+        .then(this._checkResponce)
+    }
+
+    setNewAvatar(data) {
+        return fetch(`${this._url}/users/me/avatar`, {
+            method: 'PATCH',
+            headers: this._headers,
+            body: JSON.stringify({
+                avatar: data.inputAvatar
+            })
+        })
+        .then(this._checkResponce)
+    }
+
+    addCard(data) {
+        return fetch(`${this._url}/cards`,{
+            method: 'POST',
+            headers: this._headers,
+            body: JSON.stringify({
+                name: data.inputPlace,
+                link: data.inputImage
+            })
+        })
+        .then(this._checkResponce)
+    }
+}

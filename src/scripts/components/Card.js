@@ -5,7 +5,15 @@ export class Card {
   #newCard;
   #templateSelector;
   #handleClickImage;
+  #handleClickDelete;
+  #handleClickLike;
   #cardLike;
+  #likes;
+  #myId;
+  #ownerId;
+  #userId;
+  #cardDelete;
+  #openDeletePopup
   //Приватный метод класса для нахождения темплейта в документе проекта
   #getTemplate() {
     return document
@@ -14,18 +22,23 @@ export class Card {
       .cloneNode(true);
   }
   //Конструктор класса/присваивание значений переменным, которые нужны для создания объекта класса
-  constructor({name, link, handleClickImage}, templateSelector) {
-    this.#name = name;
-    this.#link = link;
+  constructor({data, userId, handleClickImage, handleClickDelete, handleClickLike}, templateSelector) {
+    this.#name = data.name;
+    this.#link = data.link;
+    this.#likes = data.likes;
+    this.#myId = data.myId;
+    this.#ownerId = data.owner._id;
+    this.#userId = userId
     this.#templateSelector = templateSelector;
     this.#handleClickImage = handleClickImage;
-    this.#cardLike = null;
+    this.#openDeletePopup = handleClickDelete;
+    this.#handleClickLike = handleClickLike;
   }
   //Общедоступный метод класса, создающий карточку на странице
   createCard = () => {
       this.#newCard = this.#getTemplate();
       const cardImage = this.#newCard.querySelector('.elements__image');
-      const cardDelete = this.#newCard.querySelector(".elements__delete-button");
+      this.#cardDelete = this.#newCard.querySelector(".elements__delete-button");
       const cardName = this.#newCard.querySelector(".elements__name");
       this.#cardLike = this.#newCard.querySelector(".elements__like-button");
                               
@@ -33,26 +46,28 @@ export class Card {
       cardImage.alt = this.#name;
       cardName.textContent = this.#name;
       //Удаления объекта                
-      cardDelete.addEventListener("click", () => {
-        this.#handleClickDelete();
+      this.#cardDelete.addEventListener("click", () => {
+        this.#openDeletePopup(this.#newCard);
       });
       //Лайк объекта                   
       this.#cardLike.addEventListener("click", () => {;
-        this.#handleClickLike()
+        this.#handleClickLike(this.#cardLike)
       });
       //Открытие модального окна с изображением карточки                   
       cardImage.addEventListener("click", () => {
         this.#handleClickImage(this.#name, this.#link)
       });
       //Возвращение объекта в общую видимость
+      this.#changeVisibleTrashButton()
       return this.#newCard;
     }
-  //Метод удаления объекта
-  #handleClickDelete = () => {
-      this.#newCard.remove();
+
+  removeCard() {
+    this.#newCard.remove();
+    this.#newCard = null
   }
-  //Метод лайка объекта
-  #handleClickLike = () => {
-      this.#cardLike.classList.toggle("elements__like-button_active");
+
+  #changeVisibleTrashButton(){
+    this.#myId === this.#ownerId ? this.#cardDelete.style.display = "block" : this.#cardDelete.style.display = "none"
   }
 }
