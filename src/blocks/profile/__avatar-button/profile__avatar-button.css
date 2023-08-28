@@ -17,6 +17,6 @@
 
 @media screen and (max-width:655px) {
     .profile__avatar-button {
-        top:0px
+        top:0px;
     }
 }
