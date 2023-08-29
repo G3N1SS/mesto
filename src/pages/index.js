@@ -78,12 +78,12 @@ function handleFormSubmitAvatar(data) {
   api.setNewAvatar(data)
   .then(res => {
     userInfo.setUserInfo({avatar: res.avatar, about: res.about, username: res.name})
+    avatarFormInstance.close()
   })
   .catch((err => console.error(`Ошибка при редактировании профиля ${err}`)))
   .finally(() => {
     avatarFormInstance.submitBtnTextChanger();
   })
-  avatarFormInstance.close()
 }
 
 //Функция изменения данных профиля
@@ -91,13 +91,13 @@ function handleFormSubmitProfile(data) {
   api.setUserInfo(data)
     .then(res => {
       userInfo.setUserInfo({avatar: res.avatar, about: res.about, username: res.name})
+      profileFormInstance.close();
     })
     .catch((err => console.error(`Ошибка при редактировании профиля ${err}`)))
     .finally(() => {
       profileFormInstance.submitBtnTextChanger()
     })
   // userInfo.setUserInfo({name, job});
-  profileFormInstance.close();
 };
 //Функция добавления карточки на страницу
 function handleFormSubmitAdd(data) {
@@ -111,7 +111,6 @@ function handleFormSubmitAdd(data) {
     .finally(() => {
       cardFormInstance.submitBtnTextChanger()
     })
-    cardFormInstance.close()
 };
 
 function handleFormSubmitDelete({card, cardId}){
@@ -124,7 +123,6 @@ function handleFormSubmitDelete({card, cardId}){
     .finally(() => {
       deleteFormInstance.deleteBtnTextChanger()
     })
-  deleteFormInstance.close()
   } 
 
 //Функция создании карточки с помощью класса карты
