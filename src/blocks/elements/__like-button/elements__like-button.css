@@ -8,6 +8,7 @@
     border: none;
     background-color: white;
     cursor: pointer;
+    transition: all .3s;
 }
 
 .elements__like-button:hover {

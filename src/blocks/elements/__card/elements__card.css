@@ -1,4 +1,9 @@
 .elements__card {
     max-height: max-content;
     position: relative;
+    transition: all .3s;
+}
+
+.elements__card:hover{
+    transform: scale(1.05);
 }

@@ -10,6 +10,7 @@
     width: 32px;
     height: 32px;
     background-size: 32px;
+    transition: all .3s;
 }
 
 .popup__close:hover{
